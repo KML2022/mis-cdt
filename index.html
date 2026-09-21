@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mis CDT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f4f5f7;--surface:#ffffff;--text:#1a1d23;--muted:#6b7280;--line:#e4e6eb;
+  --accent:#1f5fd6;--accent-soft:#e6eefc;--good:#188a5a;--good-soft:#e2f5ec;
+  --on-accent:#ffffff;--serif:"Cormorant Garamond","Playfair Display",Georgia,serif;--warn:#b26a00;--warn-soft:#fff1d6;--bad:#c62f3f;--bad-soft:#fde6e8;--info:#3b6ea5;--info-soft:#e8f0f9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1115;--surface:#181b21;--text:#eceef2;--muted:#9aa1ad;--line:#2a2e37;
+    --accent:#6ea0ff;--on-accent:#0f1115;--accent-soft:#1c2a45;--good:#4cc38a;--good-soft:#14301f;
+    --warn:#f0b34a;--warn-soft:#3a2c10;--bad:#ff7a88;--bad-soft:#3a1a1f;--info:#7fb0e6;--info-soft:#18283a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1115;--surface:#181b21;--text:#eceef2;--muted:#9aa1ad;--line:#2a2e37;
+  --accent:#6ea0ff;--on-accent:#0f1115;--accent-soft:#1c2a45;--good:#4cc38a;--good-soft:#14301f;
+  --warn:#f0b34a;--warn-soft:#3a2c10;--bad:#ff7a88;--bad-soft:#3a1a1f;--info:#7fb0e6;--info-soft:#18283a;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-bottom:84px}
+h1{font-size:20px;margin:0}
+h2{font-size:15px;margin:0 0 10px;font-weight:650}
+.wrap{max-width:640px;margin:0 auto;padding:12px 14px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:6px 0 10px}
+.sub{color:var(--muted);font-size:12.5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.kpi .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.kpi .v{font-size:19px;font-weight:700;margin-top:3px;word-break:break-word}
+.kpi .s{font-size:11.5px;color:var(--muted);margin-top:2px}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-weight:600;font-size:13.5px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.bad{color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:6px 10px;font-size:12.5px}
+.icon{border:1px solid var(--line);background:var(--surface);border-radius:10px;width:40px;height:40px;font-size:18px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;-webkit-overflow-scrolling:touch}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.badge{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11.5px;font-weight:700}
+.b-bad{background:var(--bad-soft);color:var(--bad)}.b-warn{background:var(--warn-soft);color:var(--warn)}
+.b-good{background:var(--good-soft);color:var(--good)}.b-info{background:var(--info-soft);color:var(--info)}
+.b-mut{background:var(--line);color:var(--muted)}
+.cdt{border-top:1px solid var(--line);padding:11px 0}
+.cdt:first-child{border-top:0;padding-top:0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.muted{color:var(--muted)}.small{font-size:12.5px}
+.alert{border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:13.5px;border-left:4px solid}
+.a-3{background:var(--bad-soft);border-color:var(--bad)}.a-2{background:var(--warn-soft);border-color:var(--warn)}
+.a-1{background:var(--info-soft);border-color:var(--info)}.a-0{background:var(--good-soft);border-color:var(--good)}
+.alert b{display:block;margin-bottom:2px}
+.bar{position:relative;height:16px;background:var(--line);border-radius:6px;overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.mrow{display:grid;grid-template-columns:52px 1fr 64px;gap:8px;align-items:center;margin:7px 0;font-size:12.5px}
+.mrow .amt{text-align:right;font-variant-numeric:tabular-nums}
+.limit{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--text);opacity:.7}
+.legend{display:flex;flex-wrap:wrap;gap:8px 12px;margin-top:8px;font-size:12px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+nav button{flex:1;border:0;background:none;padding:9px 2px 8px;font-size:11px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:1px}
+nav button span{font-size:19px;line-height:1.1}
+nav button.on{color:var(--accent);font-weight:700}
+.fab{position:fixed;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:50%;border:0;background:var(--accent);color:var(--on-accent);font-size:28px;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);z-index:11}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:640px;max-height:92%;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+label{display:block;font-size:12.5px;color:var(--muted);margin:10px 0 4px;font-weight:600}
+input,select,textarea{width:100%;font:inherit;font-size:16px;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 11px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{position:fixed;left:14px;right:14px;bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--text);color:var(--bg);border-radius:12px;padding:11px 14px;z-index:40;display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:612px;margin:0 auto}
+.toast button{background:none;border:0;color:var(--accent);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+td,th{padding:6px 4px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+th{color:var(--muted);font-weight:600;border-top:0}
+td:first-child,th:first-child{text-align:left}
+.empty{text-align:center;padding:30px 10px}
+.note{font-size:11.5px;color:var(--muted);margin-top:8px}
+
+/* ===== estilos elegantes ===== */
+h1,.kpi .v{font-family:var(--serif)}
+h1{font-size:26px;letter-spacing:.02em}
+.kpi .v{font-size:23px}
+:root[data-skin="negro"]{
+  --bg:#08080a;--surface:#141416;--text:#f4ecd8;--muted:#a99f88;--line:#2d2a22;
+  --accent:#d4af37;--on-accent:#15110a;--accent-soft:#2a2410;
+  --good:#7fd6a4;--good-soft:#12261b;--warn:#f0b94d;--warn-soft:#332810;--bad:#ff8088;--bad-soft:#341a1e;--info:#d9c48a;--info-soft:#221e12;
+}
+:root[data-skin="negro"] h1,:root[data-skin="negro"] .kpi .v{color:#e9c75d;text-shadow:0 0 18px rgba(212,175,55,.25)}
+:root[data-skin="negro"] .card,:root[data-skin="negro"] .kpi{border-color:rgba(212,175,55,.28);background:linear-gradient(180deg,#18181b,#101012)}
+:root[data-skin="negro"] h2{color:#d4af37;text-transform:uppercase;letter-spacing:.09em;font-size:12.5px}
+:root[data-skin="negro"] nav{background:#0d0d0f;border-top-color:rgba(212,175,55,.35)}
+:root[data-skin="negro"] .fab{box-shadow:0 0 0 3px rgba(212,175,55,.25),0 6px 18px rgba(0,0,0,.6)}
+:root[data-skin="negro"] .toast{background:#f4ecd8;color:#15110a}
+:root[data-skin="taupe"]{
+  --bg:#d8cec2;--surface:#f6f1ea;--text:#2c2520;--muted:#75685c;--line:#d9cdbf;
+  --accent:#6b4f3e;--on-accent:#fbf7f1;--accent-soft:#e8dccf;
+  --good:#2f7a56;--good-soft:#dcebe1;--warn:#9a5d12;--warn-soft:#f3e3c6;--bad:#a8323f;--bad-soft:#f1d9db;--info:#5b5f7a;--info-soft:#e3e2ea;
+}
+:root[data-skin="taupe"] h1,:root[data-skin="taupe"] .kpi .v{color:#3a2d24}
+:root[data-skin="taupe"] .card,:root[data-skin="taupe"] .kpi{border-color:#cbbdad;box-shadow:0 6px 18px rgba(74,55,40,.12)}
+:root[data-skin="taupe"] h2{color:#6b4f3e;text-transform:uppercase;letter-spacing:.09em;font-size:12.5px}
+:root[data-skin="taupe"] nav{background:#2f2721;border-top:0}
+:root[data-skin="taupe"] nav button{color:#b9aa9a}
+:root[data-skin="taupe"] nav button.on{color:#e9d3b4}
+:root[data-skin="taupe"] .toast{background:#2c2520;color:#f6f1ea}
+.skins{display:flex;gap:6px;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<button class="fab" id="fab" aria-label="Agregar CDT">+</button>
+<nav id="nav"></nav>
+<div id="layer"></div>
+<div id="toast"></div>
+
+<script>
+/* ============ utilidades ============ */
+const PALETTE=['#2a6fdb','#e07a1f','#1f9d78','#a04fd1','#d1495b','#8a8f1a','#0f9db8','#7a5c3d','#5b6cff','#c2688f'];
+const DEF={aviso:5,limEnt:30,limMes:25,fogafin:50000000,theme:'negro',ssBase:40,ssCosto:27.5,ssOtros:0,ssPila:0};
+const SKINS={
+  negro:{n:'Negro y dorado',pal:['#d4af37','#c46a3b','#efe3bf','#7fb59a','#b56576','#7d8fa8','#a08850','#e08a5a','#9c7ab8','#c9c9c9']},
+  taupe:{n:'Taupe elegante',pal:['#6b4f3e','#b08968','#4f6d5f','#a05a5a','#5d6d86','#c2a878','#8a7f72','#3f3a36','#7a5c8a','#9aa58a']},
+  claro:{n:'Claro',pal:['#2a6fdb','#e07a1f','#1f9d78','#a04fd1','#d1495b','#8a8f1a','#0f9db8','#7a5c3d','#5b6cff','#c2688f']}
+};
+function applySkin(){
+  const t=S.settings.theme in SKINS?S.settings.theme:'negro',r=document.documentElement;
+  r.setAttribute('data-skin',t);
+  if(t==='claro')r.setAttribute('data-theme','light');else r.removeAttribute('data-theme');
+}
+const BANCOS=['Bold','Pibank','Santander','Banco W','Lulo Bank','Bancolombia','Davivienda','Nu','Banco de Bogotá','BBVA','Itaú','Scotiabank Colpatria','AV Villas','Banco Popular','Finandina','Mibanco','Bancoomeva','Confiar'];
+const MES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+let S={cdts:[],settings:{...DEF},v:1};
+let view='resumen',win=30,custom={from:'',to:''},listTab='activos';
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pd=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const fd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())};
+const dd=s=>Math.round((pd(s)-today())/864e5);
+const cop=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(Math.round(n));
+const mm=n=>'$'+(n/1e6).toLocaleString('es-CO',{maximumFractionDigits:1})+' M';
+const pct=(a,b)=>b>0?a/b*100:0;
+const p1=n=>n.toLocaleString('es-CO',{maximumFractionDigits:1});
+const fcorta=s=>pd(s).toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'});
+const mkey=s=>s.slice(0,7);
+const mlabel=k=>{const [y,m]=k.split('-');return MES[+m-1]+' '+y.slice(2)};
+const uid8=()=>Math.random().toString(36).slice(2,10);
+const pf=(v,d)=>{const n=parseFloat(String(v||'').replace(',','.'));return isNaN(n)?d:n};
+const numOf=v=>parseInt(String(v||'').replace(/\D/g,''),10)||0;
+const fnum=n=>n?new Intl.NumberFormat('es-CO').format(n):'';
+
+const avDias=c=>c.aviso==='no'?null:(parseInt(c.avisoDias,10)||S.settings.aviso);
+const act=()=>S.cdts.filter(c=>c.estado!=='cerrado');
+const tot=a=>a.reduce((s,c)=>s+(c.valor||0),0);
+const colorMap=()=>{const names=[...new Set(S.cdts.map(c=>c.banco))].sort((a,b)=>a.localeCompare(b));const m={};const P=(SKINS[S.settings.theme]||SKINS.negro).pal;names.forEach((n,i)=>m[n]=P[i%P.length]);return m};
+
+/* ============ persistencia ============ */
+let docRef=null,saveT=null;
+function loadLocal(){try{const r=localStorage.getItem('cdt_tablero_v1');if(r){const o=JSON.parse(r);if(o&&o.cdts)adopt(o)}}catch(e){}}
+function adopt(o){S={cdts:o.cdts||[],settings:{...DEF,...(o.settings||{})},v:1}}
+function save(){
+  try{localStorage.setItem('cdt_tablero_v1',JSON.stringify(S))}catch(e){}
+  if(!docRef)return;
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{docRef.set(JSON.parse(JSON.stringify(S))).catch(()=>{})},400);
+}
+async function initStore(){
+  try{
+    if(typeof claude==='undefined')return;
+    const [u,d]=await Promise.all([claude.use('user'),claude.use('db')]);
+    const id=u?await u.id():null;
+    if(!d||!id)return;
+    docRef=d.doc('data/users/'+id+'/portfolio');
+    const snap=await docRef.get();
+    if(snap.exists&&snap.data()&&snap.data().cdts){adopt(snap.data());try{localStorage.setItem('cdt_tablero_v1',JSON.stringify(S))}catch(e){}}
+    else if(S.cdts.length){save()}
+    render();
+  }catch(e){}
+}
+
+/* ============ analítica ============ */
+function analyze(){
+  const A=act(),T=tot(A),cm=colorMap(),st=S.settings;
+  const ent={};
+  A.forEach(c=>{const e=ent[c.banco]||(ent[c.banco]={banco:c.banco,n:0,valor:0,capT:0,capW:0,teaW:0,conTasa:0});
+    e.n++;e.valor+=c.valor;
+    if(c.capital&&c.tea!=null&&c.tea!==''){e.capW+=c.capital;e.teaW+=c.capital*c.tea;e.conTasa++}});
+  const E=Object.values(ent).sort((a,b)=>b.valor-a.valor);
+  E.forEach(e=>{e.pct=pct(e.valor,T);e.tea=e.capW?e.teaW/e.capW:null});
+  const capW=E.reduce((s,e)=>s+e.capW,0),teaW=E.reduce((s,e)=>s+e.teaW,0);
+  const teaProm=capW?teaW/capW:null;
+  const conCap=A.filter(c=>c.capital);
+  const rend=conCap.reduce((s,c)=>s+(c.valor-c.capital),0);
+  const rendNeto=conCap.reduce((s,c)=>s+(c.valor-c.capital)*(1-(+c.ret||0)/100)-(+c.gmf||0),0);
+  const wam=T?A.reduce((s,c)=>s+Math.max(dd(c.vence),0)*c.valor,0)/T:0;
+  // escalera mensual
+  const t0=today();const months=[];
+  for(let i=0;i<13;i++){const d=new Date(t0.getFullYear(),t0.getMonth()+i,1);months.push({k:fd(d).slice(0,7),v:0,n:0,by:{}})}
+  const mIdx={};months.forEach((m,i)=>mIdx[m.k]=i);
+  let vencidos={v:0,n:0,by:{}},despues={v:0,n:0,by:{}};
+  A.forEach(c=>{const k=mkey(c.vence);let tgt;
+    if(dd(c.vence)<0)tgt=vencidos;else if(k in mIdx)tgt=months[mIdx[k]];else tgt=despues;
+    tgt.v+=c.valor;tgt.n++;tgt.by[c.banco]=(tgt.by[c.banco]||0)+c.valor});
+  // buckets
+  const defs=[['Vencidos sin cerrar',-1e9,-1],['0 – 30 días',0,30],['31 – 90 días',31,90],['91 – 180 días',91,180],['181 – 365 días',181,365],['Más de 365 días',366,1e9]];
+  const buckets=defs.map(([l,a,b])=>{const xs=A.filter(c=>{const d=dd(c.vence);return d>=a&&d<=b});return{l,v:tot(xs),n:xs.length}});
+  const v90=A.filter(c=>{const d=dd(c.vence);return d>=0&&d<=90}).reduce((s,c)=>s+c.valor,0);
+  return{A,T,E,cm,teaProm,rend,rendNeto,conCap,wam,months,vencidos,despues,buckets,v90,st};
+}
+
+function alerts(a){
+  const out=[];const {A,T,E,st}=a;
+  const add=(sev,t,m)=>out.push({sev,t,m});
+  if(!A.length)return out;
+  A.filter(c=>dd(c.vence)<0).sort((x,y)=>x.vence.localeCompare(y.vence)).forEach(c=>
+    add(3,'Actualiza este CDT',`El CDT de ${esc(c.banco)} por ${mm(c.valor)} venció el ${fcorta(c.vence)}. Márcalo como renovado o cobrado para mantener el tablero al día.`));
+  A.filter(c=>{const d=dd(c.vence),av=avDias(c);return d>=0&&(av==null?d<=7:d<=Math.max(15,av+7))}).sort((x,y)=>x.vence.localeCompare(y.vence)).slice(0,6).forEach(c=>{
+    const d=dd(c.vence),av=avDias(c),cuando=d===0?'hoy':d===1?'mañana':'en '+d+' días';
+    if(av==null){add(1,'Vence sin requerir aviso',`${esc(c.banco)} · ${mm(c.valor)} vence ${cuando} (${fcorta(c.vence)}). No requiere aviso: se renueva o paga según lo pactado. Decide si quieres cambiar algo.`);return}
+    const lim=new Date(pd(c.vence));lim.setDate(lim.getDate()-av);const dl=dd(fd(lim));
+    if(dl<0)add(3,'Ya pasó el plazo de aviso',`${esc(c.banco)} · ${mm(c.valor)} vence ${cuando} (${fcorta(c.vence)}) y el aviso era ${av} días antes. Llama al banco hoy para confirmar qué pasará con este CDT.`);
+    else add(dl<=2?3:2,dl===0?'Avisa al banco hoy':'Programa el aviso al banco',`${esc(c.banco)} · ${mm(c.valor)} vence ${cuando} (${fcorta(c.vence)}). Debes avisar antes del ${fcorta(fd(lim))}: renovar, cambiar plazo o pagar a tu cuenta.`)});
+  // concentración por entidad
+  E.filter(e=>e.pct>st.limEnt&&E.length>=1).forEach(e=>{
+    const exceso=e.valor-T*st.limEnt/100;
+    add(2,`Concentración alta en ${esc(e.banco)}`,`Tiene ${p1(e.pct)}% del portafolio (referencia: máx. ${st.limEnt}%). Al renovar, considera dirigir cerca de ${mm(exceso)} a otras entidades.`)});
+  // Fogafín
+  const sinCob=E.reduce((s,e)=>s+Math.max(0,e.valor-st.fogafin),0);
+  if(sinCob>0){
+    const ls=E.filter(e=>e.valor>st.fogafin).map(e=>esc(e.banco)).join(', ');
+    add(pct(sinCob,T)>40?2:1,'Saldo por encima del seguro de depósitos',
+      `Cerca de ${mm(sinCob)} (${p1(pct(sinCob,T))}%) excede los ${mm(st.fogafin)} que cubre el seguro por depositante en cada entidad (${ls}). Verifica que cada entidad esté inscrita en Fogafín/Fogacoop y considera repartir entre más entidades.`)}
+  // concentración de meses
+  a.months.forEach(m=>{const p=pct(m.v,T);if(p>st.limMes&&A.length>=3)add(2,`Muchos vencimientos en ${mlabel(m.k)}`,`El ${p1(p)}% del portafolio (${mm(m.v)}) vence ese mes. Al renovar, reparte plazos para suavizar la escalera.`)});
+  // huecos
+  const gaps=a.months.slice(1,13).filter(m=>m.n===0).map(m=>mlabel(m.k));
+  if(A.length>=3&&gaps.length)add(1,'Meses sin vencimientos',`No vence nada en: ${gaps.slice(0,8).join(', ')}${gaps.length>8?'…':''}. Renovar algunos CDT a plazos que caigan en esos meses te da liquidez más uniforme.`);
+  // liquidez
+  const p90=pct(a.v90,T);
+  if(A.length>=3&&p90<10)add(2,'Liquidez baja a 90 días',`Solo el ${p1(p90)}% (${mm(a.v90)}) vence en los próximos 90 días. Si esperas gastos o una oportunidad, conviene tener más CDT cortos.`);
+  else if(A.length>=3&&p90>60)add(1,'Riesgo de reinversión',`El ${p1(p90)}% vence en 90 días. Si las tasas bajan, tendrás que reinvertir más barato; considera alargar una parte.`);
+  // tasas
+  const conT=E.filter(e=>e.tea!=null);
+  if(conT.length>=2){const best=[...conT].sort((x,y)=>y.tea-x.tea)[0],worst=[...conT].sort((x,y)=>x.tea-y.tea)[0];
+    if(best.tea-worst.tea>=1)add(1,'Diferencia de tasas entre entidades',`${esc(worst.banco)} rinde TEA prom. ${p1(worst.tea)}% frente a ${p1(best.tea)}% en ${esc(best.banco)}. Compara antes de renovar (considera también el riesgo y el seguro de depósitos).`)}
+  // idea de renovación
+  const prox=[...A].filter(c=>dd(c.vence)>=0&&dd(c.vence)<=30).sort((x,y)=>x.vence.localeCompare(y.vence))[0];
+  if(prox&&A.length>=3){
+    const cand=a.months.slice(1).filter(m=>mkey(m.k+'-01')>mkey(prox.vence)).sort((x,y)=>x.v-y.v||x.k.localeCompare(y.k))[0];
+    if(cand){const target=new Date(+cand.k.slice(0,4),+cand.k.slice(5,7)-1,15);const days=Math.max(30,Math.round((target-pd(prox.vence))/864e5));
+      add(1,'Idea para el próximo vencimiento',`Al renovar el de ${esc(prox.banco)} (${fcorta(prox.vence)}), un plazo cercano a ${days} días lo haría vencer en ${mlabel(cand.k)}, el mes con menos carga de tu escalera.`)}}
+  // datos faltantes
+  const falt=A.filter(c=>!c.capital||c.tea==null||c.tea==='').length;
+  if(falt)add(1,'Completa los datos para más analítica',`${falt} de ${A.length} CDT no tienen capital o tasa. Con esos datos verás rendimientos y comparativos de tasas por entidad.`);
+  if(!out.some(o=>o.sev>=2))out.unshift({sev:0,t:'Sin alertas críticas',m:'Tu portafolio está al día y dentro de los límites que definiste.'});
+  return out.sort((x,y)=>y.sev-x.sev);
+}
+
+
+/* ===== seguridad social por mes ===== */
+function ssHTML(a){
+  const st=S.settings,rate=28.5+(+st.ssOtros||0);
+  let sinCap=0;
+  const rows=a.months.map(m=>{
+    const xs=a.A.filter(c=>mkey(c.vence)===m.k);
+    const rend=xs.filter(c=>c.capital).reduce((s,c)=>s+(c.valor-c.capital),0);
+    sinCap+=xs.filter(c=>!c.capital).length;
+    const adic=rend*(1-st.ssCosto/100)*(st.ssBase/100)*(rate/100);
+    return {k:m.k,v:m.v,n:m.n,rend,adic,res:adic+(+st.ssPila||0),sc:xs.filter(c=>!c.capital).length};
+  });
+  const totAdic=rows.reduce((s,r)=>s+r.adic,0);
+  return `<div class="card"><h2>Seguridad social por mes</h2>
+  <table><tr><th>Mes</th><th>Vence</th><th>Rendim.</th><th>SS adic.</th><th>Reservar</th></tr>
+  ${rows.map(r=>`<tr><td>${mlabel(r.k)}</td><td>${r.v?mm(r.v):'—'}</td><td>${r.rend?mm(r.rend):(r.sc?'s/d':'—')}</td><td>${r.adic?cop(r.adic):'—'}</td><td><b>${r.res?cop(r.res):'—'}</b></td></tr>`).join('')}
+  </table>
+  <div class="note">Estimación: rendimiento del mes − ${p1(st.ssCosto)}% (costos presuntos) × ${st.ssBase}% (base de cotización) × ${p1(rate)}% (salud 12,5% + pensión 16%${st.ssOtros?' + '+p1(+st.ssOtros)+'% otros':''}). "Reservar" suma tu pago habitual de seguridad social (${st.ssPila?cop(st.ssPila):'no configurado'}). Ajusta estos valores en ⚙ Ajustes.</div>
+  ${sinCap?`<div class="note">s/d: ${sinCap} CDT sin capital registrado; agrégalo para calcular su rendimiento.</div>`:''}
+  <div class="note">Referencia, no asesoría: el 27,5% corresponde al costo presunto de rentistas de capital en el esquema de la UGPP (Res. 209 de 2020); hay un esquema nuevo en trámite, así que confirma con tu contador el porcentaje vigente y si aplica en tu caso. El IBC total tiene mínimo de 1 SMMLV y tope de 25 SMMLV.</div></div>`;
+}
+
+/* ===== historial de tasas y guía estratégica ===== */
+function histHTML(a){
+  const cm=a.cm;
+  const H=S.cdts.filter(c=>c.tea!=null&&c.tea!==''&&!isNaN(+c.tea)).map(c=>({...c,tea:+c.tea}));
+  const cerr=S.cdts.filter(c=>c.estado==='cerrado'&&c.capital);
+  let out='';
+  if(H.length<1)return `<div class="card"><h2>Historial de tasas</h2><div class="muted small">Aún no hay tasas registradas. Cada CDT que ingreses con su TEA (y cada renovación) irá formando tu historial: tasas por entidad, evolución en el tiempo y comparación entre renovaciones.</div></div>`;
+  // por entidad
+  const g={};H.forEach(c=>{(g[c.banco]=g[c.banco]||[]).push(c)});
+  const rows=Object.entries(g).map(([b,xs])=>{const t=xs.map(x=>x.tea),pl=xs.filter(x=>x.plazo).map(x=>x.plazo);
+    return {b,n:xs.length,avg:t.reduce((x,y)=>x+y,0)/t.length,min:Math.min(...t),max:Math.max(...t),pl:pl.length?Math.round(pl.reduce((x,y)=>x+y,0)/pl.length):null}}).sort((x,y)=>y.avg-x.avg);
+  out+=`<table><tr><th>Entidad</th><th>CDT</th><th>TEA prom.</th><th>Mín–Máx</th><th>Plazo</th></tr>${rows.map(r=>`<tr><td><i class="dot" style="background:${cm[r.b]||'#888'}"></i>${esc(r.b)}</td><td>${r.n}</td><td><b>${p1(r.avg)}%</b></td><td>${p1(r.min)}–${p1(r.max)}</td><td>${r.pl?r.pl+' d':'—'}</td></tr>`).join('')}</table>`;
+  // por plazo
+  const buck=[['Hasta 180 d',x=>x.plazo&&x.plazo<=180],['181–360 d',x=>x.plazo&&x.plazo>180&&x.plazo<=360],['Más de 360 d',x=>x.plazo&&x.plazo>360]];
+  const bt=buck.map(([l,f])=>{const xs=H.filter(f);return xs.length?`<tr><td>${l}</td><td>${xs.length}</td><td><b>${p1(xs.reduce((s,x)=>s+x.tea,0)/xs.length)}%</b></td><td>${p1(Math.max(...xs.map(x=>x.tea)))}%</td></tr>`:''}).join('');
+  if(bt)out+=`<div class="small muted" style="margin:12px 0 4px">Tasa según plazo</div><table><tr><th>Plazo</th><th>CDT</th><th>TEA prom.</th><th>Mejor</th></tr>${bt}</table>`;
+  // evolución
+  const P=H.filter(c=>c.inicio).sort((x,y)=>x.inicio.localeCompare(y.inicio));
+  if(P.length>=2){
+    const W=320,Hh=130,pad=28;const x0=+pd(P[0].inicio),x1=+pd(P[P.length-1].inicio)||x0+1;
+    const ys=P.map(c=>c.tea),y0=Math.min(...ys)-.5,y1=Math.max(...ys)+.5;
+    const X=c=>pad+(x1===x0?.5:(+pd(c.inicio)-x0)/(x1-x0))*(W-pad-8),Y=c=>Hh-20-(c.tea-y0)/(y1-y0)*(Hh-36);
+    out+=`<div class="small muted" style="margin:12px 0 4px">Evolución de la TEA por fecha de constitución</div>
+    <svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="Evolución de tasas"><line x1="${pad}" y1="${Hh-20}" x2="${W-8}" y2="${Hh-20}" stroke="var(--line)"/><line x1="${pad}" y1="8" x2="${pad}" y2="${Hh-20}" stroke="var(--line)"/>
+    <polyline fill="none" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3" points="${P.map(c=>X(c)+','+Y(c)).join(' ')}"/>
+    ${P.map(c=>`<circle cx="${X(c)}" cy="${Y(c)}" r="4.5" fill="${cm[c.banco]||'#888'}"><title>${esc(c.banco)} ${p1(c.tea)}% (${c.inicio})</title></circle>`).join('')}
+    <text x="2" y="14" font-size="9" fill="var(--muted)">${p1(y1)}%</text><text x="2" y="${Hh-22}" font-size="9" fill="var(--muted)">${p1(y0)}%</text>
+    <text x="${pad}" y="${Hh-6}" font-size="9" fill="var(--muted)">${fcorta(P[0].inicio)}</text><text x="${W-8}" y="${Hh-6}" font-size="9" text-anchor="end" fill="var(--muted)">${fcorta(P[P.length-1].inicio)}</text></svg>`;
+  }
+  // renovaciones
+  const ren=S.cdts.filter(c=>c.renovadoDe).map(c=>({n:c,o:byId(c.renovadoDe)})).filter(r=>r.o&&r.o.tea!=null&&r.o.tea!==''&&r.n.tea!=null&&r.n.tea!=='').sort((x,y)=>y.n.vence.localeCompare(x.n.vence)).slice(0,5);
+  if(ren.length)out+=`<div class="small muted" style="margin:12px 0 4px">Últimas renovaciones (tasa anterior → nueva)</div>${ren.map(r=>{const d=+r.n.tea-+r.o.tea;return `<div class="row small" style="margin:4px 0"><span>${esc(r.n.banco)} · ${p1(+r.o.tea)}% → <b>${p1(+r.n.tea)}%</b></span><span class="badge ${d<0?'b-bad':d>0?'b-good':'b-mut'}">${d>0?'+':''}${p1(d)} pp</span></div>`}).join('')}`;
+  // realizado
+  if(cerr.length){const bruto=cerr.reduce((s,c)=>s+(c.valor-c.capital),0),neto=cerr.reduce((s,c)=>s+(c.valor-c.capital)*(1-(+c.ret||0)/100)-(+c.gmf||0),0);
+    out+=`<div class="note">Rendimiento ya realizado en ${cerr.length} CDT cerrados: bruto ${cop(bruto)} · neto ${cop(neto)}.</div>`}
+  return `<div class="card"><h2>Historial de tasas</h2>${out}<div class="note">Incluye activos y cerrados con tasa registrada. Entre más renovaciones registres, más útil será este historial.</div></div>`;
+}
+
+function tipsHTML(a){
+  const {T,st}=a;const n=Math.max(1,Math.ceil(100/st.limEnt));
+  const tips=[
+    ['Escalera de vencimientos',`Con ${mm(T)}, una escalera pareja a 12 meses sería ~${mm(T/12)} por mes. Al renovar, apunta cada CDT al mes con menos carga en vez de repetir el mismo plazo.`],
+    ['Diversificación',`Con un máximo de ${st.limEnt}% por entidad necesitas al menos ${n} entidades. Para que todo tu portafolio quede dentro del tope de ${mm(st.fogafin)} del seguro de depósitos por entidad, necesitarías cerca de ${Math.ceil(T/st.fogafin)}. Es un objetivo de referencia, no una obligación.`],
+    ['Antes de renovar','Cotiza al menos 3 entidades el día del vencimiento y compara la tasa neta (después de retención y 4x1000), no solo la nominal. La renovación automática rara vez es la mejor oferta.'],
+    ['Reserva de liquidez','Mantén una parte en CDT cortos (hasta 90 días) o vencimientos frecuentes para imprevistos. Referencia práctica: entre 10% y 20% del portafolio, según tus gastos y proyectos.'],
+    ['Plazo según expectativa de tasas','Si esperas que las tasas bajen, plazos más largos las fijan; si esperas que suban, conviene plazos cortos para reinvertir. Es un criterio, no una predicción: nadie acierta siempre.'],
+    ['Riesgo por entidad','Rendimientos altos suelen venir de entidades más pequeñas o nuevas. Revisa que estén vigiladas por la Superfinanciera y cubiertas por Fogafín/Fogacoop, y limita cuánto pones en cada una.']
+  ];
+  return `<div class="card"><h2>Guía estratégica</h2>${tips.map(([t,m])=>`<div class="alert a-1"><b>${t}</b>${m}</div>`).join('')}<div class="note">Guía general basada en buenas prácticas; no es asesoría financiera personalizada. Para tasas actuales del mercado puedes pedírmelas en el chat y las busco.</div></div>`;
+}
+
+/* ============ vistas ============ */
+function alertHTML(al){return al.map(x=>`<div class="alert a-${x.sev}"><b>${x.t}</b>${x.m}</div>`).join('')}
+
+function legendHTML(a,names){return `<div class="legend">${names.map(n=>`<span><i class="dot" style="background:${a.cm[n]}"></i>${esc(n)}</span>`).join('')}</div>`}
+
+function ladderHTML(a){
+  const rows=[];
+  if(a.vencidos.n)rows.push({l:'Vencidos',...a.vencidos});
+  a.months.forEach(m=>rows.push({l:mlabel(m.k),...m}));
+  if(a.despues.n)rows.push({l:'Después',...a.despues});
+  const max=Math.max(...rows.map(r=>r.v),1);
+  const names=[...new Set(S.cdts.filter(c=>c.estado!=='cerrado').map(c=>c.banco))];
+  return rows.map(r=>`<div class="mrow"><span>${r.l}</span><div class="bar">${Object.entries(r.by||{}).map(([b,v])=>`<i title="${esc(b)}" style="width:${v/max*100}%;background:${a.cm[b]}"></i>`).join('')}</div><span class="amt">${r.v?mm(r.v):'—'}</span></div>`).join('')+legendHTML(a,names);
+}
+
+function badgeDias(d,c){
+  const av=c?avDias(c):null;
+  if(d<0)return `<span class="badge b-bad">Vencido hace ${-d} d</span>`;
+  if(d===0)return `<span class="badge b-bad">Hoy</span>`;
+  const cls=(av!=null&&d<=av)?'b-bad':d<=15?'b-warn':d<=60?'b-info':'b-mut';
+  return `<span class="badge ${cls}">${d===1?'Mañana':'En '+d+' días'}</span>`;
+}
+
+function cdtCard(c,cm,opts={}){
+  const d=dd(c.vence),closed=c.estado==='cerrado';
+  const extra=[];
+  if(c.tea!=null&&c.tea!=='')extra.push('TEA '+p1(+c.tea)+'%');
+  if(c.plazo)extra.push(c.plazo+' días');
+  if(c.capital)extra.push('capital '+mm(c.capital));
+  if(c.capital&&c.valor>c.capital){const n=(c.valor-c.capital)*(1-(+c.ret||0)/100)-(+c.gmf||0);extra.push('rend. neto '+cop(n))}
+  if(!closed){const av=avDias(c);if(av==null)extra.push('sin aviso al banco');else{const l=new Date(pd(c.vence));l.setDate(l.getDate()-av);extra.push('avisar antes del '+fcorta(fd(l)))}}
+  return `<div class="cdt"><div class="row"><div><span class="dot" style="background:${cm[c.banco]||'#888'}"></span><b>${esc(c.banco)}</b>${c.verificar?' <span class="badge b-warn" title="Confirma la fecha">⚠ verificar</span>':''}</div><b>${cop(c.valor)}</b></div>
+  <div class="row small muted" style="margin-top:3px"><span>${closed?(c.cierre==='renovado'?'Renovado':'Cobrado')+' · vencía ':'Vence '}${fcorta(c.vence)}</span>${closed?'':badgeDias(d,c)}</div>
+  ${extra.length?`<div class="small muted" style="margin-top:2px">${extra.join(' · ')}</div>`:''}
+  ${c.nota?`<div class="small muted" style="margin-top:2px">${esc(c.nota)}</div>`:''}
+  <div class="acts">${closed?'':`<button class="btn sm pri" data-a="renew" data-id="${c.id}">Renovar</button><button class="btn sm" data-a="paid" data-id="${c.id}">Cobrado</button>`}<button class="btn sm" data-a="edit" data-id="${c.id}">Editar</button></div></div>`;
+}
+
+function vResumen(){
+  const a=analyze();
+  if(!S.cdts.length)return `<div class="top"><h1>Mis CDT</h1><button class="icon" data-a="settings">⚙</button></div><div class="card empty"><h2>Aún no hay CDT</h2><p class="muted">Agrega tu primer CDT con el botón +.</p></div>`;
+  const prox=[...a.A].sort((x,y)=>x.vence.localeCompare(y.vence))[0];
+  const al=alerts(a);
+  const conT=a.teaProm!=null;
+  return `<div class="top"><div><h1>Mis CDT</h1><div class="sub">Hoy: ${today().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="row" style="gap:6px"><button class="icon" data-a="skin" aria-label="Cambiar diseño">🎨</button><button class="icon" data-a="settings" aria-label="Ajustes">⚙</button></div></div>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="kpi"><div class="l">Portafolio (al vencimiento)</div><div class="v">${mm(a.T)}</div><div class="s">${a.A.length} CDT activos · ${a.E.length} entidades</div></div>
+    <div class="kpi"><div class="l">Vence en 30 días</div><div class="v">${mm(a.A.filter(c=>{const d=dd(c.vence);return d>=0&&d<=30}).reduce((s,c)=>s+c.valor,0))}</div><div class="s">${a.A.filter(c=>{const d=dd(c.vence);return d>=0&&d<=30}).length} CDT</div></div>
+    <div class="kpi"><div class="l">TEA promedio pond.</div><div class="v">${conT?p1(a.teaProm)+'%':'—'}</div><div class="s">${conT?'según los CDT con tasa':'agrega tasa y capital'}</div></div>
+    <div class="kpi"><div class="l">Plazo promedio restante</div><div class="v">${Math.round(a.wam)} días</div><div class="s">${a.conCap.length?'Rend. esperado '+mm(a.rend):'ponderado por valor'}</div></div>
+  </div>
+  ${prox?`<div class="card"><h2>Próximo vencimiento</h2>${cdtCard(prox,a.cm)}</div>`:''}
+  <div class="card"><h2>Alertas y recomendaciones</h2>${alertHTML(al.slice(0,4))}${al.length>4?`<button class="btn sm" data-view="analisis">Ver las ${al.length} en Análisis</button>`:''}</div>
+  <div class="card"><h2>Escalera de vencimientos (13 meses)</h2>${ladderHTML(a)}</div>`;
+}
+
+function vVenc(){
+  const a=analyze();const cm=a.cm;
+  let from=today(),to;
+  if(win==='c'){from=custom.from?pd(custom.from):today();to=custom.to?pd(custom.to):new Date(from.getFullYear(),from.getMonth()+1,from.getDate())}
+  else{to=new Date(from.getFullYear(),from.getMonth(),from.getDate()+win)}
+  const xs=a.A.filter(c=>{const d=pd(c.vence);return d>=from&&d<=to}).sort((x,y)=>x.vence.localeCompare(y.vence));
+  const vencidos=a.A.filter(c=>dd(c.vence)<0);
+  const opts=[[7,'7 d'],[15,'15 d'],[30,'30 d'],[60,'60 d'],[90,'90 d'],[180,'6 m'],[365,'12 m'],['c','Rango']];
+  return `<div class="top"><h1>Vencimientos</h1><button class="btn sm" data-a="ics">Recordatorios .ics</button></div>
+  ${vencidos.length?`<div class="alert a-3"><b>${vencidos.length} CDT vencido${vencidos.length>1?'s':''} sin cerrar</b>Márcalos como renovados o cobrados abajo.</div>`:''}
+  <div class="chips">${opts.map(([v,l])=>`<button class="chip ${win===v?'on':''}" data-win="${v}">${l}</button>`).join('')}</div>
+  ${win==='c'?`<div class="two" style="margin-bottom:10px"><div><label>Desde</label><input type="date" id="c-from" value="${custom.from||fd(from)}"></div><div><label>Hasta</label><input type="date" id="c-to" value="${custom.to||fd(to)}"></div></div>`:''}
+  <div class="card"><div class="l small muted">Recursos disponibles en el período</div><div style="font-size:26px;font-weight:750;margin:2px 0">${cop(tot(xs))}</div><div class="small muted">${xs.length} CDT · ${fcorta(fd(from))} → ${fcorta(fd(to))}</div></div>
+  <div class="card"><h2>En el período</h2>${xs.length?xs.map(c=>cdtCard(c,cm)).join(''):'<div class="muted small">No hay vencimientos en este período.</div>'}</div>
+  <div class="card"><h2>Todos los activos</h2>${a.A.length?[...a.A].sort((x,y)=>x.vence.localeCompare(y.vence)).map(c=>cdtCard(c,cm)).join(''):'<div class="muted small">Sin CDT activos.</div>'}</div>`;
+}
+
+function vAnal(){
+  const a=analyze();
+  if(!a.A.length)return `<div class="top"><h1>Análisis</h1></div><div class="card empty muted">Agrega CDT para ver el análisis.</div>`;
+  const {T,E,st,cm}=a;const al=alerts(a);
+  const maxE=Math.max(...E.map(e=>e.pct),st.limEnt,1);
+  const conc=E.map(e=>`<div style="margin:9px 0"><div class="row small"><span><i class="dot" style="background:${cm[e.banco]}"></i>${esc(e.banco)}</span><span><b>${p1(e.pct)}%</b> · ${mm(e.valor)}</span></div>
+    <div class="bar" style="margin-top:4px;overflow:visible"><i style="width:${e.pct/maxE*100}%;background:${e.pct>st.limEnt?'var(--warn)':cm[e.banco]};border-radius:6px"></i><span class="limit" style="left:${st.limEnt/maxE*100}%"></span></div></div>`).join('');
+  const cob=E.map(e=>{const c=Math.min(e.valor,st.fogafin),u=Math.max(0,e.valor-st.fogafin);
+    return `<tr><td>${esc(e.banco)}</td><td>${mm(e.valor)}</td><td>${mm(c)}</td><td style="color:${u?'var(--bad)':'var(--good)'};font-weight:700">${u?mm(u):'0'}</td></tr>`}).join('');
+  const sinCob=E.reduce((s,e)=>s+Math.max(0,e.valor-st.fogafin),0);
+  const bmax=Math.max(...a.buckets.map(b=>b.v),1);
+  const bk=a.buckets.filter((b,i)=>i>0||b.n).map(b=>`<div class="mrow" style="grid-template-columns:104px 1fr 64px"><span>${b.l}</span><div class="bar"><i style="width:${b.v/bmax*100}%;background:var(--accent)"></i></div><span class="amt">${b.v?mm(b.v):'—'}</span></div>`).join('');
+  const tasas=E.filter(e=>e.tea!=null);
+  return `<div class="top"><h1>Análisis</h1></div>
+  <div class="card"><h2>Alertas y recomendaciones</h2>${alertHTML(al)}<div class="note">Las reglas usan los límites de Ajustes (⚙). Son referencias prácticas de diversificación, no asesoría financiera personalizada.</div></div>
+  <div class="card"><h2>Concentración por entidad</h2>${conc}<div class="note">La línea vertical marca tu límite (${st.limEnt}%).</div></div>
+  <div class="card"><h2>Cobertura del seguro de depósitos</h2><table><tr><th>Entidad</th><th>Saldo</th><th>Cubierto</th><th>Sin cubrir</th></tr>${cob}<tr><td><b>Total</b></td><td><b>${mm(T)}</b></td><td><b>${mm(T-sinCob)}</b></td><td><b>${mm(sinCob)}</b></td></tr></table><div class="note">Tope configurado: ${cop(st.fogafin)} por depositante en cada entidad (capital + intereses). Confirma el tope vigente y que cada entidad esté inscrita.</div></div>
+  <div class="card"><h2>Plazo restante del portafolio</h2>${bk}<div class="note">Liquidez a 90 días: ${p1(pct(a.v90,T))}% · Plazo promedio restante: ${Math.round(a.wam)} días.</div></div>
+  <div class="card"><h2>Escalera mensual</h2>${ladderHTML(a)}<div class="note">Ideal de referencia: ~${mm(T/12)} por mes si quisieras una escalera pareja a 12 meses.</div></div>
+  <div class="card"><h2>Tasas y rendimientos</h2>${tasas.length?`<table><tr><th>Entidad</th><th>TEA prom.</th><th>CDT con dato</th></tr>${tasas.sort((x,y)=>y.tea-x.tea).map(e=>`<tr><td>${esc(e.banco)}</td><td>${p1(e.tea)}%</td><td>${e.conTasa}/${e.n}</td></tr>`).join('')}</table><div class="note">Promedio ponderado por capital. Rendimiento bruto esperado (CDT con capital): ${mm(a.rend)} · neto de retención y 4x1000: ${mm(a.rendNeto)}.</div>`:'<div class="muted small">Registra capital y TEA en tus CDT para ver el comparativo de tasas.</div>'}</div>
+  ${ssHTML(a)}
+  ${histHTML(a)}
+  ${tipsHTML(a)}`;
+}
+
+function vLista(){
+  const cm=colorMap();
+  const list=S.cdts.filter(c=>listTab==='activos'?c.estado!=='cerrado':c.estado==='cerrado').sort((x,y)=>listTab==='activos'?x.vence.localeCompare(y.vence):y.vence.localeCompare(x.vence));
+  return `<div class="top"><h1>Mis CDT</h1><button class="icon" data-a="settings">⚙</button></div>
+  <div class="chips"><button class="chip ${listTab==='activos'?'on':''}" data-tab="activos">Activos (${act().length})</button><button class="chip ${listTab==='cerrados'?'on':''}" data-tab="cerrados">Historial (${S.cdts.filter(c=>c.estado==='cerrado').length})</button></div>
+  <div class="card">${list.length?list.map(c=>cdtCard(c,cm)).join(''):'<div class="muted small">Sin registros.</div>'}</div>`;
+}
+
+const NAV=[['resumen','🏠','Resumen'],['venc','📅','Vencimientos'],['analisis','📊','Análisis'],['lista','📋','CDT']];
+function render(){
+  applySkin();
+  const y=window.scrollY;
+  $('#app').innerHTML={resumen:vResumen,venc:vVenc,analisis:vAnal,lista:vLista}[view]();
+  $('#nav').innerHTML=NAV.map(([k,i,l])=>`<button class="${view===k?'on':''}" data-view="${k}"><span>${i}</span>${l}</button>`).join('');
+  window.scrollTo(0,y);
+}
+
+/* ============ formulario ============ */
+let editing=null,manualVence=false,manualValor=false,renewFrom=null;
+function openForm(c,renew){
+  editing=c&&!renew?c:null;renewFrom=renew?c:null;manualVence=false;manualValor=false;
+  const base=renew?{banco:c.banco,capital:c.valor,tea:c.tea,fecha:c.vence,plazo:360}:(c||{});
+  const av0=(c&&c.aviso)||'si';
+  const ini=renew?base.fecha:(c&&c.inicio)||fd(today());
+  $('#layer').innerHTML=`<div class="sheet-bg" id="bg"><div class="sheet" role="dialog">
+  <div class="row"><h2 style="margin:0">${renew?'Renovar CDT':editing?'Editar CDT':'Nuevo CDT'}</h2><button class="icon" data-a="close">✕</button></div>
+  ${renew?`<div class="alert a-1" style="margin-top:10px">Se cerrará el CDT de ${esc(c.banco)} (${cop(c.valor)}) y se creará el nuevo. Ajusta capital si retiraste parte.</div>`:''}
+  <label>Banco / entidad</label><input id="f-banco" list="bl" value="${esc(base.banco||'')}" placeholder="Ej.: Bold" autocomplete="off"><datalist id="bl">${[...new Set([...BANCOS,...S.cdts.map(x=>x.banco)])].map(b=>`<option value="${esc(b)}">`).join('')}</datalist>
+  <div class="two"><div><label>Capital invertido</label><input id="f-cap" inputmode="numeric" placeholder="$" value="${fnum(base.capital||'')}"></div>
+  <div><label>Tasa E.A. (%)</label><input id="f-tea" inputmode="decimal" placeholder="Ej.: 11,5" value="${base.tea!=null&&base.tea!==''?String(base.tea).replace('.',','):''}"></div></div>
+  <div class="two"><div><label>Fecha de constitución</label><input type="date" id="f-ini" value="${ini}"></div>
+  <div><label>Plazo (días)</label><input id="f-pl" inputmode="numeric" placeholder="Ej.: 360" value="${base.plazo||''}"></div></div>
+  <div class="chips" style="margin-top:8px">${[90,180,270,360,540].map(d=>`<button class="chip" data-pl="${d}">${d} d</button>`).join('')}</div>
+  <div class="two"><div><label>Fecha de vencimiento</label><input type="date" id="f-ven" value="${(!renew&&c&&c.vence)||''}"></div>
+  <div><label>Valor al vencimiento</label><input id="f-val" inputmode="numeric" placeholder="$" value="${(!renew&&c&&c.valor)?fnum(c.valor):''}"></div></div>
+  <div class="small muted" id="f-info" style="margin-top:8px"></div>
+  <label>Aviso al banco</label>
+  <select id="f-av"><option value="si" ${av0!=='no'?'selected':''}>Sí, debo avisar antes del vencimiento</option><option value="no" ${av0==='no'?'selected':''}>No requiere aviso</option></select>
+  <div id="f-avd-w" style="${av0==='no'?'display:none':''}"><label>Días de anticipación</label><input id="f-avd" inputmode="numeric" value="${(c&&!renew&&c.avisoDias)||S.settings.aviso}"></div>
+  <div class="two"><div><label>4x1000 asumido ($)</label><input id="f-gmf" inputmode="numeric" placeholder="$0" value="${fnum((!renew&&c&&c.gmf)||'')}"></div>
+  <div><label>Retención en la fuente (%)</label><input id="f-ret" inputmode="decimal" placeholder="Ej.: 4" value="${(!renew&&c&&c.ret!=null&&c.ret!=='')?String(c.ret).replace('.',','):(renew&&c.ret!=null?String(c.ret).replace('.',','):'')}"></div></div>
+  <div class="chips" style="margin-top:8px"><button class="chip" data-a="gmfcalc">Calcular 4x1000 (0,4% del capital)</button></div>
+  <label>Nota (opcional)</label><input id="f-nota" value="${esc((!renew&&c&&c.nota)||'')}" placeholder="Ej.: pago de intereses al vencimiento">
+  <div id="f-err" class="small" style="color:var(--bad);margin-top:8px"></div>
+  <div class="acts" style="margin-top:14px"><button class="btn pri" data-a="savecdt" style="flex:1">Guardar</button>${editing?`<button class="btn bad" data-a="delete">Eliminar</button>`:''}</div>
+  </div></div>`;
+  if(editing)updInfo();else recalc();
+}
+function updInfo(){
+  const cap=numOf($('#f-cap').value),val=numOf($('#f-val').value),gmf=numOf($('#f-gmf')?.value),ret=parseFloat((($('#f-ret')?.value)||'').replace(',','.'))||0,pl=parseInt($('#f-pl').value,10);
+  let t='Ingresa capital + tasa + plazo para calcular el valor final, o escribe el valor al vencimiento directamente.';
+  if(cap&&val){const b=val-cap,r=b*ret/100,n=b-r-gmf;t=`Rendimiento bruto: ${cop(b)}`+(ret?` · retención: ${cop(r)}`:'')+(gmf?` · 4x1000: ${cop(gmf)}`:'')+` · neto: ${cop(n)}`;
+    if(pl>0&&cap+n>0)t+=` (≈ ${p1((Math.pow((cap+n)/cap,365/pl)-1)*100)}% E.A. neta)`}
+  $('#f-info').textContent=t;
+}
+function recalc(){
+  const cap=numOf($('#f-cap').value),tea=parseFloat(($('#f-tea').value||'').replace(',','.')),ini=$('#f-ini').value,pl=parseInt($('#f-pl').value,10);
+  if(ini&&pl>0){const v=pd(ini);v.setDate(v.getDate()+pl);if(!manualVence)$('#f-ven').value=fd(v)}
+  if(cap&&!isNaN(tea)&&pl>0){const val=Math.round(cap*Math.pow(1+tea/100,pl/365));if(!manualValor)$('#f-val').value=fnum(val)}
+  updInfo();
+}
+function saveForm(){
+  const banco=$('#f-banco').value.trim(),cap=numOf($('#f-cap').value),val=numOf($('#f-val').value),ven=$('#f-ven').value;
+  const teaRaw=($('#f-tea').value||'').replace(',','.').trim(),tea=teaRaw===''?null:parseFloat(teaRaw);
+  const err=m=>{$('#f-err').textContent=m};
+  if(!banco)return err('Indica el banco o entidad.');
+  if(!ven)return err('Falta la fecha de vencimiento (o fecha de constitución + plazo).');
+  if(!val)return err('Falta el valor al vencimiento (o capital + tasa + plazo).');
+  if(tea!=null&&(isNaN(tea)||tea<0||tea>60))return err('Revisa la tasa E.A.');
+  const ini=$('#f-ini').value,pl=parseInt($('#f-pl').value,10)||(ini&&ven?Math.round((pd(ven)-pd(ini))/864e5):null);
+  const data={banco,capital:cap||null,tea,inicio:ini||null,plazo:pl||null,vence:ven,valor:val,nota:$('#f-nota').value.trim(),verificar:false,aviso:$('#f-av').value,avisoDias:$('#f-av').value==='no'?null:(numOf($('#f-avd').value)||S.settings.aviso),gmf:numOf($('#f-gmf').value)||null,ret:(($('#f-ret').value||'').trim()===''?null:parseFloat($('#f-ret').value.replace(',','.')))};
+  if(editing){Object.assign(editing,data);if(editing.estado==='cerrado'){}}
+  else{const n={id:uid8(),estado:'activo',...data};if(renewFrom){n.renovadoDe=renewFrom.id;renewFrom.estado='cerrado';renewFrom.cierre='renovado';renewFrom.cierreFecha=fd(today())}S.cdts.push(n)}
+  save();closeLayer();render();
+}
+function closeLayer(){$('#layer').innerHTML=''}
+
+/* ============ ajustes ============ */
+function openSettings(){
+  const st=S.settings;
+  $('#layer').innerHTML=`<div class="sheet-bg"><div class="sheet">
+  <div class="row"><h2 style="margin:0">Ajustes</h2><button class="icon" data-a="close">✕</button></div>
+  <label>Diseño</label><div class="skins">${Object.entries(SKINS).map(([k,v])=>`<button class="chip ${st.theme===k?'on':''}" data-skinset="${k}">${v.n}</button>`).join('')}</div>
+  <label>Días de anticipación para avisar al banco</label><input id="s-av" inputmode="numeric" value="${st.aviso}">
+  <div class="two"><div><label>Máx. % por entidad</label><input id="s-le" inputmode="numeric" value="${st.limEnt}"></div><div><label>Máx. % por mes</label><input id="s-lm" inputmode="numeric" value="${st.limMes}"></div></div>
+  <label>Tope del seguro de depósitos por entidad ($)</label><input id="s-fo" inputmode="numeric" value="${fnum(st.fogafin)}">
+  <h2 style="margin-top:18px">Seguridad social</h2>
+  <label>% costos presuntos (se descuenta del rendimiento)</label><input id="s-sc" inputmode="decimal" value="${String(st.ssCosto).replace('.',',')}">
+  <div class="two"><div><label>% base sobre rendimientos</label><input id="s-sb" inputmode="decimal" value="${String(st.ssBase).replace('.',',')}"></div><div><label>Otros aportes (%)</label><input id="s-so" inputmode="decimal" value="${String(st.ssOtros).replace('.',',')}"></div></div>
+  <label>Pago habitual mensual de seguridad social ($)</label><input id="s-sp" inputmode="numeric" value="${fnum(st.ssPila)}">
+  <div class="acts" style="margin-top:12px"><button class="btn pri" data-a="savesettings">Guardar ajustes</button></div>
+  <h2 style="margin-top:22px">Respaldo de datos</h2>
+  <div class="small muted">Tus datos se guardan en tu cuenta. Descarga un archivo de respaldo, o restáuralo pegando aquí el contenido del archivo o del texto generado.</div>
+  <textarea id="s-bk" rows="4" placeholder="Pega aquí un respaldo para restaurar"></textarea>
+  <div class="acts"><button class="btn sm pri" data-a="dlbackup">Descargar respaldo (.json)</button><button class="btn sm" data-a="mkbackup">Generar texto</button><button class="btn sm" data-a="restore">Restaurar</button></div>
+  <div id="s-msg" class="small muted" style="margin-top:8px"></div>
+  </div></div>`;
+}
+
+/* ============ respaldo descargable ============ */
+async function downloadBackup(){
+  let dl=null;try{dl=typeof claude!=='undefined'?await claude.use('downloads'):null}catch(e){}
+  const msg=$('#s-msg');
+  if(!dl){if(msg)msg.textContent='La descarga no está disponible aquí. Usa "Generar texto" y guárdalo en Notas.';return}
+  try{
+    const r=await dl.save({filename:'respaldo-cdt-'+fd(today())+'.json',data:JSON.stringify(S,null,2)});
+    if(msg)msg.textContent=r&&r.status==='delivered'?'Respaldo enviado.':'Respaldo guardado.';
+  }catch(e){if(msg)msg.textContent='No se guardó el respaldo (cancelado o sin permiso).'}
+}
+
+/* ============ recordatorios .ics ============ */
+async function exportIcs(){
+  let dl=null;try{dl=typeof claude!=='undefined'?await claude.use('downloads'):null}catch(e){}
+  if(!dl){toast('La descarga no está disponible en esta vista.');return}
+  const A=act().filter(c=>dd(c.vence)>=0);
+  if(!A.length){toast('No hay vencimientos futuros.');return}
+  const z=s=>s.replace(/-/g,'');const nx=s=>{const d=pd(s);d.setDate(d.getDate()+1);return z(fd(d))};
+  const ev=[];
+  A.forEach(c=>{
+    const ad=avDias(c);const av=pd(c.vence);av.setDate(av.getDate()-(ad||0));const avS=fd(av);
+    const desc=`CDT ${c.banco} por ${cop(c.valor)} vence el ${c.vence}`;
+    if(ad!=null&&dd(avS)>=0)ev.push(['Avisar al banco: CDT '+c.banco,avS,desc]);
+    ev.push(['Vence CDT '+c.banco+' ('+mm(c.valor)+')',c.vence,desc]);
+  });
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Mis CDT//ES','CALSCALE:GREGORIAN'];
+  ev.forEach((e,i)=>lines.push('BEGIN:VEVENT','UID:cdt-'+i+'-'+z(e[1])+'@miscdt','DTSTAMP:'+z(fd(today()))+'T000000Z','DTSTART;VALUE=DATE:'+z(e[1]),'DTEND;VALUE=DATE:'+nx(e[1]),'SUMMARY:'+e[0].replace(/[,;]/g,' '),'DESCRIPTION:'+e[2].replace(/[,;]/g,' '),'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:CDT','TRIGGER:-PT0M','END:VALARM','END:VEVENT'));
+  lines.push('END:VCALENDAR');
+  try{await dl.save({filename:'recordatorios-cdt.ics',data:lines.join('\r\n')})}catch(e){}
+}
+
+/* ============ acciones ============ */
+let toastT=null;
+function toast(msg,undo){
+  clearTimeout(toastT);
+  $('#toast').innerHTML=`<div class="toast"><span>${esc(msg)}</span>${undo?'<button data-a="undo">Deshacer</button>':''}</div>`;
+  window._undo=undo;toastT=setTimeout(()=>{$('#toast').innerHTML='';window._undo=null},6000);
+}
+const byId=id=>S.cdts.find(c=>c.id===id);
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,.sheet-bg');if(!t)return;
+  if(t.id==='fab'){openForm();return}
+  if(t.classList.contains('sheet-bg')&&e.target===t){closeLayer();return}
+  const d=t.dataset;
+  if(d.view){view=d.view;render();window.scrollTo(0,0);return}
+  if(d.win!==undefined){win=d.win==='c'?'c':+d.win;render();return}
+  if(d.tab){listTab=d.tab;render();return}
+  if(d.pl){$('#f-pl').value=d.pl;recalc();return}
+  if(d.skinset){S.settings.theme=d.skinset;save();render();document.querySelectorAll('[data-skinset]').forEach(b=>b.classList.toggle('on',b.dataset.skinset===d.skinset));return}
+  const id=d.id,a=d.a;
+  if(a==='close')closeLayer();
+  else if(a==='settings')openSettings();
+  else if(a==='skin'){const ks=Object.keys(SKINS);S.settings.theme=ks[(ks.indexOf(S.settings.theme)+1)%ks.length];save();render()}
+  else if(a==='edit')openForm(byId(id));
+  else if(a==='renew')openForm(byId(id),true);
+  else if(a==='paid'){const c=byId(id);const prev={estado:c.estado,cierre:c.cierre,cierreFecha:c.cierreFecha};
+    c.estado='cerrado';c.cierre='cobrado';c.cierreFecha=fd(today());save();render();
+    toast('CDT de '+c.banco+' marcado como cobrado',()=>{Object.assign(c,prev);if(!prev.cierre){delete c.cierre;delete c.cierreFecha}save();render()})}
+  else if(a==='undo'){if(window._undo)window._undo();$('#toast').innerHTML=''}
+  else if(a==='savecdt')saveForm();
+  else if(a==='delete'){if(editing){const c=editing,i=S.cdts.indexOf(c);S.cdts.splice(i,1);save();closeLayer();render();toast('CDT eliminado',()=>{S.cdts.splice(i,0,c);save();render()})}}
+  else if(a==='savesettings'){
+    S.settings={...S.settings,aviso:numOf($('#s-av').value)||DEF.aviso,limEnt:numOf($('#s-le').value)||DEF.limEnt,limMes:numOf($('#s-lm').value)||DEF.limMes,fogafin:numOf($('#s-fo').value)||DEF.fogafin,ssBase:pf($('#s-sb').value,DEF.ssBase),ssCosto:pf($('#s-sc').value,DEF.ssCosto),ssOtros:pf($('#s-so').value,0),ssPila:numOf($('#s-sp').value)};
+    save();closeLayer();render()}
+  else if(a==='mkbackup'){$('#s-bk').value=JSON.stringify(S);$('#s-bk').select();$('#s-msg').textContent='Copia el texto y guárdalo en un lugar seguro.'}
+  else if(a==='restore'){try{const o=JSON.parse($('#s-bk').value);if(!o||!Array.isArray(o.cdts))throw 0;adopt(o);save();closeLayer();render();toast('Respaldo restaurado')}catch(x){$('#s-msg').textContent='El texto no es un respaldo válido.'}}
+  else if(a==='gmfcalc'){const cap=numOf($('#f-cap').value);if(cap){$('#f-gmf').value=fnum(Math.round(cap*0.004));updInfo()}}
+  else if(a==='dlbackup')downloadBackup();
+  else if(a==='ics')exportIcs();
+});
+document.addEventListener('input',e=>{
+  const id=e.target.id;
+  if(['f-cap','f-tea','f-ini','f-pl'].includes(id))recalc();
+  if(['f-gmf','f-ret'].includes(id))updInfo();
+  if(id==='f-ven'){manualVence=true;const ini=$('#f-ini').value,v=e.target.value;if(ini&&v)$('#f-pl').value=Math.round((pd(v)-pd(ini))/864e5);recalc()}
+  if(id==='f-val'){manualValor=true;recalc()}
+  if(id==='c-from'){custom.from=e.target.value;render()}
+  if(id==='c-to'){custom.to=e.target.value;render()}
+});
+document.addEventListener('change',e=>{if(e.target.id==='f-av'){$('#f-avd-w').style.display=e.target.value==='no'?'none':''}});
+document.addEventListener('focusout',e=>{if(['f-cap','f-val','s-fo','f-gmf','s-sp'].includes(e.target.id)){e.target.value=fnum(numOf(e.target.value))}});
+
+loadLocal();applySkin();render();initStore();
+</script>
+</body>
+</html>
