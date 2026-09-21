@@ -117,6 +117,21 @@ h1{font-size:26px;letter-spacing:.02em}
 :root[data-skin="taupe"] nav button.on{color:#e9d3b4}
 :root[data-skin="taupe"] .toast{background:#2c2520;color:#f6f1ea}
 .skins{display:flex;gap:6px;margin-top:4px}
+/* ===== pantalla de bloqueo ===== */
+#lock-screen{position:fixed;inset:0;background:#08080a;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+#lock-screen h2{font-family:"Cormorant Garamond",Georgia,serif;color:#d4af37;font-size:28px;margin:0;text-shadow:0 0 18px rgba(212,175,55,.25)}
+#lock-screen .sub{color:#a99f88;font-size:13px;margin:0}
+.pin-dots{display:flex;gap:14px;margin:8px 0}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #d4af37;background:transparent;transition:background .15s}
+.pin-dot.filled{background:#d4af37}
+.pin-pad{display:grid;grid-template-columns:repeat(3,72px);gap:10px}
+.pin-btn{width:72px;height:72px;border-radius:50%;border:1px solid rgba(212,175,55,.35);background:linear-gradient(180deg,#18181b,#101012);color:#f4ecd8;font-size:22px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pin-btn:active{background:#2a2410}
+.pin-btn.del{font-size:18px;color:#a99f88}
+.bio-btn{margin-top:4px;background:none;border:1px solid rgba(212,175,55,.35);border-radius:12px;padding:10px 20px;color:#d4af37;font-size:14px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.pin-error{color:#ff8088;font-size:13px;min-height:18px}
+.pin-setup{color:#a99f88;font-size:12px;text-align:center;max-width:240px}
+
 </style>
 </head>
 <body>
@@ -626,5 +641,99 @@ document.addEventListener('focusout',e=>{if(['f-cap','f-val','s-fo','f-gmf','s-s
 loadLocal();applySkin();render();initStore();
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/mis-cdt/sw.js")}</script>
+<script>
+/* ===== seguridad PIN + biométrico ===== */
+const LOCK_KEY='cdt_pin_v1';
+const SESSION_KEY='cdt_unlocked';
+let pinBuffer='',pinMode='check',pinConfirm='';
+
+function bioAvailable(){return window.PublicKeyCredential&&typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable==='function'}
+async function bioCheck(){try{return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()}catch(e){return false}}
+
+function savedPin(){return localStorage.getItem(LOCK_KEY)}
+function sessionOk(){return sessionStorage.getItem(SESSION_KEY)==='1'}
+function grantSession(){sessionStorage.setItem(SESSION_KEY,'1')}
+
+function renderLock(){
+  const hasPin=!!savedPin();
+  const mode=hasPin?'check':'setup';
+  pinMode=mode;pinBuffer='';pinConfirm='';
+  const bioHtml=`<button class="bio-btn" id="bio-btn">🪪 Usar huella / Face ID</button>`;
+  document.body.insertAdjacentHTML('afterbegin',`<div id="lock-screen">
+    <h2>💰 Mis CDT</h2>
+    <p class="sub">${mode==='setup'?'Crea tu PIN de acceso':'Ingresa tu PIN'}</p>
+    <div class="pin-dots" id="pin-dots">
+      ${[0,1,2,3].map(i=>`<div class="pin-dot" id="pd${i}"></div>`).join('')}
+    </div>
+    <div class="pin-error" id="pin-err"></div>
+    <div class="pin-pad">
+      ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>`<button class="pin-btn${k==='⌫'?' del':''}" data-k="${k}">${k}</button>`).join('')}
+    </div>
+    ${hasPin?bioHtml:''}
+    <p class="pin-setup">${mode==='setup'?'Este PIN protegerá el acceso a tu tablero':''}</p>
+  </div>`);
+  document.getElementById('lock-screen').addEventListener('click',e=>{
+    const k=e.target.closest('[data-k]');
+    if(k)handlePin(k.dataset.k);
+    if(e.target.id==='bio-btn')tryBio();
+  });
+  if(hasPin)setTimeout(()=>tryBio(),400);
+}
+
+function updateDots(){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById('pd'+i);
+    if(d)d.classList.toggle('filled',i<pinBuffer.length);
+  }
+}
+
+function handlePin(k){
+  const err=document.getElementById('pin-err');
+  if(err)err.textContent='';
+  if(k==='⌫'){pinBuffer=pinBuffer.slice(0,-1);updateDots();return}
+  if(k===''||pinBuffer.length>=4)return;
+  pinBuffer+=k;updateDots();
+  if(pinBuffer.length===4){
+    setTimeout(()=>{
+      if(pinMode==='check'){
+        if(pinBuffer===savedPin()){unlock()}
+        else{pinBuffer='';updateDots();if(err)err.textContent='PIN incorrecto, intenta de nuevo';}
+      } else if(pinMode==='setup'){
+        pinConfirm=pinBuffer;pinBuffer='';pinMode='confirm';updateDots();
+        const sub=document.querySelector('#lock-screen .sub');
+        if(sub)sub.textContent='Confirma tu PIN';
+        if(err)err.textContent='';
+      } else if(pinMode==='confirm'){
+        if(pinBuffer===pinConfirm){localStorage.setItem(LOCK_KEY,pinBuffer);unlock();}
+        else{pinBuffer='';pinConfirm='';pinMode='setup';updateDots();if(err)err.textContent='Los PIN no coinciden, empieza de nuevo';}
+      }
+    },120);
+  }
+}
+
+async function tryBio(){
+  if(!await bioCheck())return;
+  try{
+    await navigator.credentials.get({publicKey:{
+      challenge:crypto.getRandomValues(new Uint8Array(32)),
+      rpId:location.hostname,
+      allowCredentials:[],
+      userVerification:'required',
+      timeout:30000
+    }});
+    unlock();
+  }catch(e){/* cancelado o no disponible */}
+}
+
+function unlock(){
+  grantSession();
+  const ls=document.getElementById('lock-screen');
+  if(ls)ls.remove();
+}
+
+// Iniciar bloqueo
+if(!sessionOk())renderLock();
+
+</script>
 </body>
 </html>
