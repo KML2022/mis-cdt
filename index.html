@@ -638,7 +638,7 @@ document.addEventListener('input',e=>{
 document.addEventListener('change',e=>{if(e.target.id==='f-av'){$('#f-avd-w').style.display=e.target.value==='no'?'none':''}});
 document.addEventListener('focusout',e=>{if(['f-cap','f-val','s-fo','f-gmf','s-sp'].includes(e.target.id)){e.target.value=fnum(numOf(e.target.value))}});
 
-loadLocal();applySkin();render();initStore();
+if(!sessionOk()){renderLock();}else{loadLocal();applySkin();render();initStore();}
 </script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/mis-cdt/sw.js")}</script>
 <script>
@@ -729,11 +729,10 @@ function unlock(){
   grantSession();
   const ls=document.getElementById('lock-screen');
   if(ls)ls.remove();
+  loadLocal();applySkin();render();initStore();
 }
 
 // Iniciar bloqueo
-if(!sessionOk())renderLock();
-
 </script>
 </body>
 </html>
