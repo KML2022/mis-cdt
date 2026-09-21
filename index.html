@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <link rel="manifest" href="/mis-cdt/manifest.json">
-<link rel="manifest" href="/mis-cdt/manifest.json">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mis CDT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -119,21 +118,17 @@ h1{font-size:26px;letter-spacing:.02em}
 :root[data-skin="taupe"] .toast{background:#2c2520;color:#f6f1ea}
 .skins{display:flex;gap:6px;margin-top:4px}
 
-
-
-/* lock */
-#lk{position:fixed;inset:0;background:#08080a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-family:-apple-system,sans-serif}
+#lk{position:fixed;inset:0;background:#08080a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 #lk h2{font-family:"Cormorant Garamond",Georgia,serif;color:#d4af37;font-size:28px;margin:0}
-#lk .sub{color:#a99f88;font-size:13px;margin:0;text-align:center}
+#lk .sub{color:#a99f88;font-size:13px;margin:0}
 .pdots{display:flex;gap:14px}
 .pd{width:14px;height:14px;border-radius:50%;border:2px solid #d4af37;background:transparent;transition:background .15s}
 .pd.on{background:#d4af37}
-.ppad{display:grid;grid-template-columns:repeat(3,70px);gap:10px}
+.ppad{display:grid;grid-template-columns:repeat(3,70px);gap:10px;margin-top:4px}
 .pb{width:70px;height:70px;border-radius:50%;border:1px solid rgba(212,175,55,.4);background:#141416;color:#f4ecd8;font-size:22px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .pb:active{background:#2a2410}
 .perr{color:#ff8088;font-size:13px;min-height:16px}
-#bio-btn{background:none;border:1px solid rgba(212,175,55,.35);border-radius:10px;padding:9px 18px;color:#d4af37;font-size:13px;cursor:pointer}
-
+#bio-btn{background:none;border:1px solid rgba(212,175,55,.35);border-radius:10px;padding:9px 18px;color:#d4af37;font-size:13px;cursor:pointer;margin-top:4px}
 </style>
 </head>
 <body>
@@ -642,102 +637,75 @@ document.addEventListener('focusout',e=>{if(['f-cap','f-val','s-fo','f-gmf','s-s
 
 loadLocal();applySkin();render();initStore();
 </script>
-<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/mis-cdt/sw.js")}</script>
 <script>
-
-
-// Iniciar bloqueo
-</script>
-<script>
-/* ===== PIN + Bio lock ===== */
 (function(){
-  var PIN_KEY='cdt_pin_v1';
+  var K='cdt_pin_v1';
   var buf='',mode='check',conf='';
-
-  function saved(){return localStorage.getItem(PIN_KEY)}
-  function ok(){return sessionStorage.getItem('cdt_ok')==='1'}
+  function saved(){return localStorage.getItem(K)}
+  function isOk(){return sessionStorage.getItem('cdt_ok')==='1'}
   function grant(){sessionStorage.setItem('cdt_ok','1')}
-
   function show(){
     var has=!!saved();
     mode=has?'check':'setup';buf='';conf='';
     var el=document.createElement('div');
     el.id='lk';
-    el.innerHTML='<h2>💰 Mis CDT</h2>'
-      +'<p class="sub" id="lk-sub">'+(has?'Ingresa tu PIN':'Crea un PIN de 4 dígitos')+'</p>'
+    el.innerHTML='<h2>Mis CDT</h2>'
+      +'<p class="sub" id="lk-sub">'+(has?'Ingresa tu PIN':'Crea un PIN de 4 digitos')+'</p>'
       +'<div class="pdots"><div class="pd" id="p0"></div><div class="pd" id="p1"></div><div class="pd" id="p2"></div><div class="pd" id="p3"></div></div>'
       +'<div class="perr" id="perr"></div>'
       +'<div class="ppad">'
       +'<button class="pb" data-n="1">1</button><button class="pb" data-n="2">2</button><button class="pb" data-n="3">3</button>'
       +'<button class="pb" data-n="4">4</button><button class="pb" data-n="5">5</button><button class="pb" data-n="6">6</button>'
       +'<button class="pb" data-n="7">7</button><button class="pb" data-n="8">8</button><button class="pb" data-n="9">9</button>'
-      +'<button class="pb" data-n="">⠀</button><button class="pb" data-n="0">0</button><button class="pb" data-n="del">⌫</button>'
+      +'<button class="pb" style="opacity:0" disabled></button><button class="pb" data-n="0">0</button><button class="pb" data-n="del">X</button>'
       +'</div>'
-      +(has?'<button id="bio-btn">🪪 Huella / Face ID</button>':'');
+      +(has?'<button id="bio-btn">Huella / Face ID</button>':'');
     document.body.appendChild(el);
-
     el.addEventListener('click',function(e){
       var b=e.target.closest('[data-n]');
-      if(b)tap(b.dataset.n);
+      if(b)tap(b.getAttribute('data-n'));
       if(e.target.id==='bio-btn')bio();
     });
-
-    if(has) setTimeout(bio,500);
+    if(has)setTimeout(bio,600);
   }
-
-  function dots(){
-    for(var i=0;i<4;i++){
-      var d=document.getElementById('p'+i);
-      if(d) d.classList.toggle('on',i<buf.length);
-    }
-  }
-
+  function dots(){for(var i=0;i<4;i++){var d=document.getElementById('p'+i);if(d)d.classList.toggle('on',i<buf.length);}}
   function tap(n){
     var err=document.getElementById('perr');
-    if(err) err.textContent='';
-    if(n==='del'){buf=buf.slice(0,-1);dots();return}
-    if(n===''||buf.length>=4) return;
-    buf+=n; dots();
+    if(err)err.textContent='';
+    if(n==='del'){buf=buf.slice(0,-1);dots();return;}
+    if(buf.length>=4)return;
+    buf+=n;dots();
     if(buf.length===4){
       setTimeout(function(){
         if(mode==='check'){
-          if(buf===saved()){done()}
-          else{buf='';dots();if(err)err.textContent='PIN incorrecto'}
-        } else if(mode==='setup'){
+          if(buf===saved()){done();}
+          else{buf='';dots();if(err)err.textContent='PIN incorrecto';}
+        }else if(mode==='setup'){
           conf=buf;buf='';mode='confirm';dots();
           var s=document.getElementById('lk-sub');
-          if(s) s.textContent='Confirma tu PIN';
-        } else {
-          if(buf===conf){localStorage.setItem(PIN_KEY,buf);done()}
-          else{buf='';conf='';mode='setup';dots();if(err)err.textContent='No coinciden, intenta de nuevo'}
+          if(s)s.textContent='Confirma tu PIN';
+        }else{
+          if(buf===conf){localStorage.setItem(K,buf);done();}
+          else{buf='';conf='';mode='setup';dots();if(err)err.textContent='No coinciden, intenta de nuevo';}
         }
       },150);
     }
   }
-
-  function done(){
-    grant();
-    var el=document.getElementById('lk');
-    if(el) el.remove();
-  }
-
-  async function bio(){
-    try{
-      if(!window.PublicKeyCredential) return;
-      var ok=await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-      if(!ok) return;
-      await navigator.credentials.get({publicKey:{
+  function done(){grant();var el=document.getElementById('lk');if(el)el.remove();}
+  function bio(){
+    if(!window.PublicKeyCredential)return;
+    PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function(a){
+      if(!a)return;
+      navigator.credentials.get({publicKey:{
         challenge:crypto.getRandomValues(new Uint8Array(32)),
         rpId:location.hostname,
         allowCredentials:[],
         userVerification:'required',
         timeout:30000
-      }});
-      done();
-    }catch(e){}
+      }}).then(done).catch(function(){});
+    }).catch(function(){});
   }
-
-  if(!ok()) show();
+  if(!isOk())show();
 })();
 </script>
 </body>
